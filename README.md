@@ -27,23 +27,24 @@ Create another ```<script>``` for your JQuery
 
 ```
 <script>
-			$('#fusio-table-wrapper').fusioTable({
-				url : 'http://api.mylocal.test/northwind/customer',
-				count : 10, // default 10
-				startIndex : 0, // default 0
-				sortBy : 'customerid', // default null
-				sortOrder : 'asc', // default null
-				filterBy : 'customerid', // default null
-				filterOp : 'M', // default null
-				filterValue : 'startsWith', // default null
-        token : null, // add JWT token is required
-				columns : [ // default [] -- empty array
-					{ label : 'Customer ID', name : 'customerid' },
-					{ label : 'Company', name : 'companyname' },
-					{ label : 'Contact', name : 'contactname' },
-					{ label : 'Title', name : 'contacttitle' },
-				]
-			});
+	$('#fusio-table-wrapper').fusioTable({
+		url : 'http://api.mylocal.test/northwind/customer',
+		count : 10, // default 10
+		startIndex : 0, // default 0
+		sortBy : 'customerid', // default null
+		sortOrder : 'asc', // default null
+		filterBy : 'customerid', // default null
+		filterOp : 'M', // default null
+		filterValue : 'startsWith', // default null
+		token : null, // add JWT token if required
+		table_id : 'fusioTable', // optional table ID
+		columns : [ // default [] -- empty array
+			{ label : 'Customer ID', name : 'customerid' },
+			{ label : 'Company', name : 'companyname' },
+			{ label : 'Contact', name : 'contactname' },
+			{ label : 'Title', name : 'contacttitle' },
+		]
+	});
 </script>
 ```
 
