@@ -5,7 +5,7 @@ requires JQuery and Bootstrap CSS, and of course Fusio Project over at https://f
 
 Fusio Project is an awesome REST API management platform created with PHP. Among some of its cool features is being able to expose your chosen table via REST API without any coding. It also supports sorting, filtering and pagination out of the box. Seeing that it is a great tool, fusioTable is a JQuery Plugin that takes that API and build you a paginated table.
 
-Currently fusioTable only supports pagination, and very poor buttons. But I plan to support columns sorting and also filtering later.
+Currently fusioTable only supports column sorting and pagination with very ugly buttons. But I plan to support columns filtering later.
 
 ## How to use
 
@@ -39,9 +39,9 @@ Create another ```<script>``` for your JQuery
 		token : null, // add JWT token if required
 		table_id : 'fusioTable', // optional table ID
 		columns : [ // default [] -- empty array
-			{ label : 'Customer ID', name : 'customerid' },
+			{ label : 'Customer ID', name : 'customerid', sortable : true },
 			{ label : 'Company', name : 'companyname' },
-			{ label : 'Contact', name : 'contactname' },
+			{ label : 'Contact', name : 'contactname', sortable : true },
 			{ label : 'Title', name : 'contacttitle' },
 		]
 	});
