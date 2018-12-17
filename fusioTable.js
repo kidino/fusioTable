@@ -18,7 +18,7 @@ Requirement
  
         // This is the easiest way to have default options.
         var settings = $.extend({
-			sortOrder : null,
+			sortOrder : 'desc',
 			sortBy : null,
 			startIndex : 0,
 			count : 10,
@@ -51,7 +51,7 @@ Requirement
 						fusio_build_thead(data, settings);
 					}
 					
-					fusio_build_table(data, settings.table_id, settings);
+					fusio_build_rows(data, settings.table_id, settings);
 					
 					fusio_build_buttons(data, settings);
 				}
@@ -64,17 +64,23 @@ Requirement
 			var tid = '#'+settings.table_id;
 			if (settings.columns.length < 1) {
 				for(var x in data.entry[0]) {
-					that.find(tid+' thead tr').append('<th>'+x+'</th>');
+					that.find(tid+' thead tr').append('<th data-col="'+x+'" class="sortable">'+x+'</th>');
 				}
 			} else {
 				for(var x in settings.columns) {
 					var col = settings.columns[x];
-					that.find(tid+' thead tr').append('<th data-col="'+col.name+'">'+col.label+'</th>');
+					var do_sortable = '';
+					if (col.hasOwnProperty('sortable') && col.sortable) { do_sortable = ' class="sortable"'; }
+					
+					that.find(tid+' thead tr').append('<th data-col="'+col.name+'"'+do_sortable+'>'+col.label+'</th>');
 				}
 			}
+			
+			that.find(tid+' th.sortable').css('cursor','pointer');
+
 		};
 		
-		var fusio_build_table = function(data, table_id, settings){
+		var fusio_build_rows = function(data, table_id, settings){
 			var tid = '#'+table_id;
 			if (data.entry.length) {
 				that.find(tid+' tbody').html('');
@@ -135,6 +141,33 @@ Requirement
 			
 		});
 		
+		var sym = { 
+			'asc' : '<span class="sort-icon float-right"> &mapstoup;</span>',
+			'desc' : '<span class="sort-icon float-right"> &mapstodown;</span>'
+		};
+		
+		this.on('click', 'th.sortable', function(){
+			
+			var col = $(this).attr('data-col');
+			console.log(col);
+			console.log(settings.sortBy);
+			console.log(col == settings.sortBy);
+			
+			if (col == settings.sortBy) {
+				if (settings.sortOrder == 'desc') { settings.sortOrder = 'asc'; }
+				else { settings.sortOrder = 'desc'; }
+			} else {
+				settings.sortBy = col;
+				settings.sortOrder = 'asc';
+			}
+			
+			build_table(settings);
+			
+			$(this).parent().find('.sort-icon').remove();
+			$(this).append( sym[settings.sortOrder] );
+			
+		});
+				
     };
  
 }( jQuery ));
