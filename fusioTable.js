@@ -44,7 +44,7 @@ Requirement
 					console.log(data);
 					
 					if (that.find('#'+settings.table_id).length < 1) {
-						that.html('<table id="'+settings.table_id+'" class="table table-striped"><thead><tr></tr></thead><tbody></tbody></table><div class="buttons-wrapper"></div>');
+						that.html('<table id="'+settings.table_id+'" class="table table-striped"><thead><tr></tr></thead><tbody></tbody></table><hr><div class="buttons-wrapper text-center"></div>');
 					}
 					
 					if (that.find('#'+settings.table_id+' thead tr th').length < 1) { 
@@ -95,14 +95,7 @@ Requirement
 						for(var y in settings.columns) {
 							var col = settings.columns[y];
 							if (col.hasOwnProperty('custom')) {
-								
-								var colstr = col.custom;
-								
-								for(var u in data.entry[x]) {
-									colstr = colstr.replaceAll('{'+u+'}', data.entry[x][u])
-								}
-								
-								trstr += '<td>'+colstr+'</td>';
+								trstr += '<td>'+col.custom(data.entry[x])+'</td>';
 							} else {
 								trstr += '<td>'+data.entry[x][col.name]+'</td>';
 							}
@@ -127,16 +120,55 @@ Requirement
 			var this_page = Math.floor( settings.startIndex / settings.count) + 1;
 			var page = settings.count+1;
 			if ((data.totalResults / settings.count) > 0) { total_pages++; }
-			//console.log(total_pages);
 			
-			for(var i = 1; i <= total_pages; i++) {
-				var active = '';
-				if (i == this_page) {
-					active = ' active';
+			var prev_page = this_page - 1;
+			prev_page = (prev_page < 1) ? 1 : prev_page;
+						
+			var next_page = this_page + 1;
+			if (next_page > total_pages) {
+				next_page = total_pages;
+			}
+			
+			var first_page = 1;
+			var last_page = 5;
+
+			if (total_pages > 5) {
+				if (this_page > 3) {
+					first_page = this_page - 2;
+					last_page = this_page + 2;
 				}
-				
+
+				if (last_page > total_pages) {
+					last_page = total_pages;
+				}
+
+				if ((last_page - first_page) < 4) {
+					first_page = last_page - 4;
+				}
+			}
+
+			if (last_page > total_pages) {
+				last_page = total_pages;
+			}
+
+			var first_record = (((this_page - 1) * settings.count) + 1);
+			var last_record = first_record + settings.count - 1;
+			if (last_record > data.totalResults) {
+				last_record = data.totalResults;
+			}
+			
+			that.find('.buttons-wrapper').append('<button class="btn btn-sm btn-secondary btn-page" data-page="1">&laquo;</button> ');
+			that.find('.buttons-wrapper').append('<button class="btn btn-sm btn-secondary btn-page" data-page="'+prev_page+'">&lsaquo;</button> ');
+						
+			for(var i = first_page; i <= last_page; i++) {
+				var active = (i == this_page) ? ' active' : '';
 				that.find('.buttons-wrapper').append('<button class="btn btn-sm btn-secondary btn-page'+active+'" data-page="'+i+'">'+i+'</button> ');
 			}
+			
+			that.find('.buttons-wrapper').append('<button class="btn btn-sm btn-secondary btn-page" data-page="'+next_page+'">&rsaquo;</button> ');
+			that.find('.buttons-wrapper').append('<button class="btn btn-sm btn-secondary btn-page" data-page="'+total_pages+'">&raquo;</button>');
+			
+			that.find('.buttons-wrapper').append('<p><small>Row ' + first_record + ' to ' + last_record + ' from ' + data.totalResults + ' rows</small></p>');
 			
 		}
  
@@ -185,8 +217,3 @@ Requirement
     };
  
 }( jQuery ));
-
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search, 'g'), replacement);
-};

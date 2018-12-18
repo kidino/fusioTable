@@ -33,32 +33,39 @@ Create another ```<script>``` for your JQuery
 
 ```
 <script>
-	$('#fusio-table-wrapper').fusioTable({
-		url : 'http://api.mylocal.test/northwind/customer',
-		count : 10, // default 10
-		startIndex : 0, // default 0
-		sortBy : 'customerid', // default null
-		sortOrder : 'asc', // default null
-		filterBy : 'customerid', // default null
-		filterOp : 'M', // default null
-		filterValue : 'startsWith', // default null
-		token : null, // add JWT token if required
-		table_id : 'fusioTable', // optional table ID
-		columns : [ // default [] -- empty array
-			{ label : 'Customer ID', name : 'customerid', sortable : true },
-			{ label : 'Company', name : 'companyname' },
-			{ label : 'Contact', name : 'contactname', sortable : true },
-			{ label : 'Title', name : 'contacttitle' },
-			{ label : 'Action', // to add custom columns
-				custom : '<button data-id="{customerid}" class="btn btn-sm btn-warning edit-customer">EDIT</button> ' 
-				+ '<button data-id="{customerid}" class="btn btn-sm btn-danger delete-customer">DELETE</button> ' 
-			} 
-
-		]
-	});
-	
-	// sample for assigning actions to your buttons in custom column
 	$(document).ready(function(){
+		$('#fusio-table-wrapper').fusioTable({
+			url : 'http://api.mylocal.test/northwind/customer',
+			count : 10, // default 10
+			startIndex : 0, // default 0
+			sortBy : 'customerid', // default null
+			sortOrder : 'asc', // default null
+			filterBy : 'customerid', // default null
+			filterOp : 'M', // default null
+			filterValue : 'startsWith', // default null
+			token : null, // add JWT token if required
+			table_id : 'fusioTable', // optional table ID
+			columns : [ // default [] -- empty array
+				{ label : 'Customer ID', name : 'customerid', sortable : true },
+				{ label : 'Company', name : 'companyname' },
+				{ label : 'Contact', name : 'contactname', sortable : true },
+				{ label : 'Title', name : 'contacttitle' },
+				{ label : 'Action', // to add custom columns
+					custom: function(cols) { 
+						if (cols == null) return; 
+						// Some how browser will run this the first time when
+						// API not loaded yet and cols is null. Will break with
+						// JS error. This prevents that. cols will return the 
+						// entry columns from API call for your manipulation.
+						
+						return "<button data-id='"+cols.customerid+"' class='btn btn-sm btn-warning edit-customer'>EDIT</button> "
+							+ "<button data-id='"+cols.customerid+"' class='btn btn-sm btn-danger delete-customer'>DELETE</button>";
+					} 
+				} 
+			]
+		});
+	
+		// sample for assigning event triggers to your buttons in custom column
 		$('#fusio-table-wrapper').on('click','.edit-customer', function(){
 			var customerid = $(this).attr('data-id');
 			window.location.href = 'edit_customer.php?id='+customerid;
