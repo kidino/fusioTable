@@ -70,9 +70,13 @@ Requirement
 				for(var x in settings.columns) {
 					var col = settings.columns[x];
 					var do_sortable = '';
-					if (col.hasOwnProperty('sortable') && col.sortable) { do_sortable = ' class="sortable"'; }
 					
-					that.find(tid+' thead tr').append('<th data-col="'+col.name+'"'+do_sortable+'>'+col.label+'</th>');
+					if (col.hasOwnProperty('custom')) {						
+						that.find(tid+' thead tr').append('<th>'+col.label+'</th>');
+					} else {
+						if (col.hasOwnProperty('sortable') && col.sortable) { do_sortable = ' class="sortable"'; }						
+						that.find(tid+' thead tr').append('<th data-col="'+col.name+'"'+do_sortable+'>'+col.label+'</th>');
+					}					
 				}
 			}
 			
@@ -87,11 +91,21 @@ Requirement
 				for(var x in data.entry) {
 					var trstr = '<tr>';
 					
-					
 					if (settings.columns.length > 0) {
 						for(var y in settings.columns) {
 							var col = settings.columns[y];
-							trstr += '<td>'+data.entry[x][col.name]+'</td>';
+							if (col.hasOwnProperty('custom')) {
+								
+								var colstr = col.custom;
+								
+								for(var u in data.entry[x]) {
+									colstr = colstr.replaceAll('{'+u+'}', data.entry[x][u])
+								}
+								
+								trstr += '<td>'+colstr+'</td>';
+							} else {
+								trstr += '<td>'+data.entry[x][col.name]+'</td>';
+							}
 						}
 					} else {
 						var entry = data.entry[x];
@@ -172,4 +186,7 @@ Requirement
  
 }( jQuery ));
 
-
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};

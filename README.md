@@ -5,7 +5,13 @@ requires JQuery and Bootstrap CSS, and of course Fusio Project over at https://f
 
 Fusio Project is an awesome REST API management platform created with PHP. Among some of its cool features is being able to expose your chosen table via REST API without any coding. It also supports sorting, filtering and pagination out of the box. Seeing that it is a great tool, fusioTable is a JQuery Plugin that takes that API and build you a paginated table.
 
-Currently fusioTable only supports column sorting and pagination with very ugly buttons. But I plan to support columns filtering later.
+Currently fusioTable only supports :
+
+* column sorting 
+* pagination with (very ugly buttons)
+* custom columns
+
+Future plans to support column filtering.
 
 ## How to use
 
@@ -43,8 +49,28 @@ Create another ```<script>``` for your JQuery
 			{ label : 'Company', name : 'companyname' },
 			{ label : 'Contact', name : 'contactname', sortable : true },
 			{ label : 'Title', name : 'contacttitle' },
+			{ label : 'Action', // to add custom columns
+				custom : '<button data-id="{customerid}" class="btn btn-sm btn-warning edit-customer">EDIT</button> ' 
+				+ '<button data-id="{customerid}" class="btn btn-sm btn-danger delete-customer">DELETE</button> ' 
+			} 
+
 		]
 	});
+	
+	// sample for assigning actions to your buttons in custom column
+	$(document).ready(function(){
+		$('#fusio-table-wrapper').on('click','.edit-customer', function(){
+			var customerid = $(this).attr('data-id');
+			window.location.href = 'edit_customer.php?id='+customerid;
+		});
+	
+		$('#fusio-table-wrapper').on('click','.delete-customer', function(){
+			var customerid = $(this).attr('data-id');
+			window.location.href = 'delete_customer.php?id='+customerid;
+		});
+	
+	});
+
 </script>
 ```
 
